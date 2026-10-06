@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jadwal Sholat Kelompok 2</title>
+<meta name="description" content="Cek jadwal sholat Subuh, Dzuhur, Ashar, Maghrib, dan Isya sesuai lokasi Anda.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav><div class="wrap"><div class="logo"><i>🕌</i><div>Jadwal Sholat Kelompok 2</div></div><button id="theme" type="button" aria-label="Ganti tema">🌓</button></div><div class="menu"><button class="on" data-v="jadwal">🕌 Jadwal</button><button data-v="quran">📖 Al-Qur'an</button><button data-v="dzikir">📿 Dzikir &amp; Wirid</button><button data-v="hadits">💬 Hadits</button><button data-v="ceramah">🎙️ Ceramah</button><button data-v="notif">🔔 Pengingat</button></div></nav>
+<div class="wrap">
+<div class="view" id="v-jadwal">
+  <header class="hero">
+    <div class="kick"><span id="gd"></span><span id="hd"></span></div>
+    <h1 id="where"></h1>
+    <div class="lbl">Menuju <b id="nx"></b></div>
+    <div class="big" id="cd">--:--:--</div>
+    <div class="bar"><div id="pg"></div></div>
+    <div class="chips"><span id="clk"></span><span id="sr"></span></div>
+  </header>
+  <div class="ctl">
+    <div><label for="city">Kota</label><select id="city"></select></div>
+    <div><label for="date">Tanggal</label><input type="date" id="date"></div>
+    <button class="gps" id="gps" type="button">📍 Lokasi saya</button>
+  </div>
+  <div class="tabs"><button class="on" data-t="today">Hari ini</button><button data-t="month">Jadwal bulanan</button></div>
+  <div id="today" class="grid"></div>
+  <div id="month" class="hide">
+    <div class="mh"><b id="mt"></b><button id="pr" type="button">🖨️ Cetak</button></div>
+    <div class="tw"><table><thead><tr><th>Tanggal</th><th>Subuh</th><th>Terbit</th><th>Dzuhur</th><th>Ashar</th><th>Maghrib</th><th>Isya</th></tr></thead><tbody id="mb"></tbody></table></div>
+  </div>
+  <div class="item hod" id="hod"></div>
+  <section class="feat">
+    <div>🎯<b>Metode Kemenag RI</b><p>Subuh 20°, Isya 18°, mazhab Syafi'i, dengan ihtiyat +2 menit.</p></div>
+    <div>📍<b>35 Kota + GPS</b><p>Pilih kota di WIB, WITA, WIT, atau gunakan lokasi perangkat.</p></div>
+    <div>⚡<b>Cepat &amp; Offline</b><p>Dihitung langsung di browser, tanpa API dan tanpa server.</p></div>
+  </section>
+</div>
+<div class="view hide" id="v-quran"><h2>📖 Al-Qur'an</h2>
+  <div id="q-box"><div id="q-cont"></div><input id="q-search" placeholder="Cari surah (nama, arti, atau nomor)…" style="margin:10px 0 14px"><div id="q-list" class="grid"></div></div>
+  <div id="q-read" class="hide"></div></div>
+<div class="view hide" id="v-dzikir"><h2>📿 Dzikir &amp; Wirid</h2>
+  <div class="tabs2" id="dz-tabs"><button class="on" data-g="s">Setelah sholat</button><button data-g="p">Pagi &amp; petang</button></div>
+  <p style="color:var(--mut);font-size:.85rem">Ketuk tombol hitung untuk menghitung bacaan.</p><div id="dz-list"></div></div>
+<div class="view hide" id="v-hadits"><h2>💬 Hadits Pilihan</h2><div id="hd-list"></div></div>
+<div class="view hide" id="v-ceramah"><h2>🎙️ Ceramah &amp; Kajian</h2>
+  <p style="color:var(--mut);font-size:.9rem">Pilih ustadz untuk membuka kanal atau ceramah pilihan di YouTube.</p>
+  <div id="cm-list"></div>
+  <small style="color:var(--mut)">Tautan membuka YouTube. Seluruh konten milik kanal masing-masing.</small></div>
+<div class="view hide" id="v-notif"><h2>🔔 Pengingat Waktu Sholat</h2>
+  <div class="panel">
+    <div class="btns"><button class="gps" id="nf-on">🔔 Aktifkan notifikasi</button></div>
+    <small id="nf-st" style="color:var(--mut)"></small>
+    <div><label for="nf-tone">Nada dering</label><select id="nf-tone"><option value="lonceng">Lonceng</option><option value="seruling">Seruling</option><option value="melodi">Melodi panggilan</option><option value="digital">Digital</option><option value="kustom">Nada kustom (unggah file)</option></select></div>
+    <input type="file" id="nf-file" accept="audio/*" class="hide">
+    <div><label for="nf-lead">Waktu pengingat</label><select id="nf-lead"><option value="0">Tepat waktu</option><option value="5">5 menit sebelum</option><option value="10">10 menit sebelum</option><option value="15">15 menit sebelum</option></select></div>
+    <div><label for="nf-vol">Volume</label><input type="range" id="nf-vol" min="0.1" max="1" step="0.1"></div>
+    <div><label>Aktif untuk</label><div id="nf-pr"></div></div>
+    <div class="btns"><button id="nf-t1">▶ Uji nada</button><button id="nf-t2">🔔 Uji notifikasi</button></div>
+    <small style="color:var(--mut)">Notifikasi berbunyi selama halaman ini masih terbuka di browser.</small>
+  </div></div>
+</div>
+<div id="toast"></div>
+<footer><b>Ingatlah sholat sebelum disholatkan</b></footer>
+<script src="script.js"></script>
+<script src="fitur.js"></script>
+</body>
+</html>
