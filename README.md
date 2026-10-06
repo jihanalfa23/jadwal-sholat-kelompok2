@@ -1,4 +1,4 @@
-#Website Cek Jadwal Sholat
+## Website Cek Jadwal Sholat
 
 **Website Cek Jadwal Sholat** adalah aplikasi berbasis web yang dibuat oleh **Kelompok 2** untuk membantu pengguna melihat jadwal sholat berdasarkan lokasi.
 
