@@ -1,7 +1,8 @@
 // ===== fitur.js : Al-Qur'an, Dzikir, Hadits, Notifikasi =====
 const V=["jadwal","quran","dzikir","hadits","ceramah","notif"];
 const ls={g(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},s(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
-function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),6000)}
+let tt;
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),6000)}
 document.querySelectorAll(".menu button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll(".menu button").forEach(x=>x.classList.toggle("on",x===b));
   V.forEach(v=>$("v-"+v).classList.toggle("hide",v!==b.dataset.v));
@@ -78,17 +79,24 @@ async function openS(n,a){
 // ----- Notifikasi & nada dering -----
 let S=ls.g("nf",{on:false,tone:"lonceng",lead:0,vol:.8,pr:{subuh:1,dzuhur:1,ashar:1,maghrib:1,isya:1}}),AC,custom=ls.g("nfc",null);const fired=new Set();
 const saveS=()=>ls.s("nf",S);
+let cur=null; // suara yang sedang diputar (agar tidak menumpuk)
+function stopTone(){
+  if(!cur)return;
+  try{if(cur.a){cur.a.pause();cur.a.currentTime=0}if(cur.g)cur.g.disconnect();cur.os.forEach(o=>{try{o.stop()}catch(e){}})}catch(e){}
+  cur=null}
 function tone(name){
   AC=AC||new (window.AudioContext||window.webkitAudioContext)();AC.resume();
-  if(name==="kustom"){if(custom){const a=new Audio(custom);a.volume=S.vol;a.play()}return}
-  const t0=AC.currentTime,g=AC.createGain();g.gain.value=S.vol*.4;g.connect(AC.destination);
-  const note=(f,t,d,ty)=>{const o=AC.createOscillator(),e=AC.createGain();o.type=ty;o.frequency.value=f;e.gain.setValueAtTime(0,t0+t);e.gain.linearRampToValueAtTime(1,t0+t+.02);e.gain.exponentialRampToValueAtTime(.001,t0+t+d);o.connect(e);e.connect(g);o.start(t0+t);o.stop(t0+t+d+.05)};
+  stopTone(); // hentikan suara sebelumnya sebelum memutar yang baru
+  if(name==="kustom"){if(custom){const a=new Audio(custom);a.volume=S.vol;cur={a,os:[]};a.play()}return}
+  const t0=AC.currentTime,g=AC.createGain(),os=[];g.gain.value=S.vol*.4;g.connect(AC.destination);cur={g,os};
+  const note=(f,t,d,ty)=>{const o=AC.createOscillator(),e=AC.createGain();o.type=ty;o.frequency.value=f;e.gain.setValueAtTime(0,t0+t);e.gain.linearRampToValueAtTime(1,t0+t+.02);e.gain.exponentialRampToValueAtTime(.001,t0+t+d);o.connect(e);e.connect(g);os.push(o);o.start(t0+t);o.stop(t0+t+d+.05)};
   const P={lonceng:[[880,0,2],[1320,0,1.6],[1760,.02,1],[880,1.2,2],[1320,1.2,1.6]],seruling:[[523,0,.6],[587,.5,.6],[659,1,.6],[784,1.5,1.2],[659,2.6,.6],[523,3.1,1.4]],melodi:[[659,0,.5],[622,.5,.5],[659,1,.5],[587,1.5,.5],[523,2,.5],[587,2.5,.5],[494,3,1.5]],digital:[[1000,0,.15],[1000,.25,.15],[1000,.5,.15],[1400,.9,.4]]};
   (P[name]||P.lonceng).forEach(n=>note(n[0],n[1],n[2],name==="digital"?"square":"sine"))}
+let lastN=null; // notifikasi terakhir (ditutup sebelum yang baru muncul)
 function fire(x){
   const m=S.lead?`${S.lead} menit lagi masuk waktu ${x.n}`:`Waktunya sholat ${x.n}`;
   tone(S.tone);toast("🔔 "+m);
-  try{if(Notification.permission==="granted")new Notification(m,{body:loc[0]+" · "+fmt(((x.w+loc[3]*36e5)%864e5)/36e5),tag:x.k+x.w})}catch(e){}}
+  try{if(Notification.permission==="granted"){if(lastN)lastN.close();lastN=new Notification(m,{body:loc[0]+" · "+fmt(((x.w+loc[3]*36e5)%864e5)/36e5),tag:x.k==="uji"?"uji":x.k+x.w})}}catch(e){}}
 setInterval(()=>{if(!S.on)return;const now=Date.now();
   seq().forEach(x=>{const f=x.w-S.lead*6e4,key=x.k+x.w;if(S.pr[x.k]&&now>=f&&now-f<6e4&&!fired.has(key)){fired.add(key);fire(x)}})},1000);
 function drawN(){
