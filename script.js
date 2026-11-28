@@ -21,6 +21,7 @@ const sel=$("city");CITIES.forEach((c,i)=>sel.add(new Option(c[0],i)));
 let loc=CITIES[4],sig="";
 try{const s=localStorage.getItem("city");if(s!==null&&CITIES[s])loc=CITIES[s];const th=localStorage.getItem("theme");if(th)root.dataset.theme=th}catch(e){}
 sel.value=CITIES.indexOf(loc);
+let selectedCityIndex = sel.selectedIndex;
 const fmt=h=>{const m=Math.round(h*60);return p2(Math.floor(m/60)%24)+":"+p2(m%60)};
 const ymd=(tz,o=0)=>{const t=new Date(Date.now()+tz*36e5+o*864e5);return[t.getUTCFullYear(),t.getUTCMonth()+1,t.getUTCDate()]};
 const ms=(y,m,d,h,tz)=>Date.UTC(y,m-1,d)+(h-tz)*36e5;
@@ -55,7 +56,25 @@ function tick(){
   $("clk").textContent="🕐 "+p2(c.getUTCHours())+":"+p2(c.getUTCMinutes())+":"+p2(c.getUTCSeconds())+" UTC+"+loc[3];
   if($("date").value===todayStr()&&sig!==n.k+n.tomorrow)render();
 }
-sel.onchange=()=>{loc=CITIES[sel.value];try{localStorage.setItem("city",sel.value)}catch(e){}$("date").value=todayStr();render()};
+sel.onchange = () => {
+  const index = sel.value === '' ? -1 : Number(sel.value);
+
+  if (!Number.isInteger(index) || index < 0 || index >= CITIES.length) {
+    sel.value = String(selectedCityIndex);
+    toast('Pilihan kota tidak valid. Silakan pilih kota dari daftar.');
+    return;
+  }
+
+  selectedCityIndex = index;
+  loc = CITIES[index];
+
+  try {
+    localStorage.setItem('city', String(index));
+  } catch (e) {}
+
+  $('date').value = todayStr();
+  render();
+};
 $("date").onchange=()=>{if($("date").value)render()};
 $("gps").onclick=()=>{
   if(!navigator.geolocation)return alert("Browser tidak mendukung geolokasi.");
