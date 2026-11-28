@@ -1,0 +1,23 @@
+{
+  "name": "jadwal-sholat-kelompok2",
+  "version": "1.0.0",
+  "description": "**Website Cek Jadwal Sholat** adalah aplikasi berbasis web yang dibuat oleh **Kelompok 2** untuk membantu pengguna melihat jadwal sholat berdasarkan lokasi.",
+  "main": "fitur.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jihanalfa23/jadwal-sholat-kelompok2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jihanalfa23/jadwal-sholat-kelompok2/issues"
+  },
+  "homepage": "https://github.com/jihanalfa23/jadwal-sholat-kelompok2#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.11"
+  }
+}
